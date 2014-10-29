@@ -1,6 +1,6 @@
 {
-  "name": "gulp-stylus-sprite",
-  "version": "1.0.0",
+  "name": "gulp-stylus-sprites",
+  "version": "0.0.1",
   "description": "gulp stylus sprite",
   "keywords": [
     "gulpplugin",
@@ -11,8 +11,16 @@
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script --require coffee-script/register -t 10000 -R spec"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/syuji-higa/gulp-stylus-sprite.git"
+  },
+  "author": "syuji-higa",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/syuji-higa/gulp-stylus-sprite/issues"
+  },
+  "homepage": "https://github.com/syuji-higa/gulp-stylus-sprite",
   "dependencies": {
     "coffee-script": "^1.8.0",
     "fs": "0.0.2",

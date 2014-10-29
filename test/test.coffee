@@ -13,6 +13,7 @@ createFile = (path) ->
 describe 'gulp-stylus-sprite', ->
 
   it "create sprite circle", (done) ->
+    isGetAllData = false
     stream = stylusSprite
       imagesSrcBase: "#{__dirname}/fixtures/sprite"
     stream.on 'data', (file) ->
@@ -21,19 +22,22 @@ describe 'gulp-stylus-sprite', ->
           console.log file
           #fs.writeFile __dirname + '/fixtures/htdocs/' + file.path, file.contents, 'binary', (err) ->
           #  if err then console.log err
-          done()
         when '.styl'
           console.log file.contents.toString()
           #fs.writeFile __dirname + '/fixtures/stylus/' + file.path, file.contents, 'binary', (err) ->
           #  if err then console.log err
     stream.on 'end', ->
-      done()
+      if isGetAllData
+        done()
+      else
+        isGetAllData = true
     stream.write createFile 'sprite/images/circle/blue.png'
     stream.write createFile 'sprite/images/circle/green.png'
     stream.write createFile 'sprite/images/circle/red.png'
     stream.end()
 
   it "create sprite square", (done) ->
+    isGetAllData = false
     stream = stylusSprite
       imagesSrcBase: "#{__dirname}/fixtures/sprite"
     stream.on 'data', (file) ->
@@ -47,7 +51,10 @@ describe 'gulp-stylus-sprite', ->
           #fs.writeFile __dirname + '/fixtures/stylus/' + file.path, file.contents, 'binary', (err) ->
           #  if err then console.log err
     stream.on 'end', ->
-      done()
+      if isGetAllData
+        done()
+      else
+        isGetAllData = true
     stream.write createFile 'sprite/images/square/blue.png'
     stream.write createFile 'sprite/images/square/green.png'
     stream.write createFile 'sprite/images/square/red.png'
