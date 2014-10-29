@@ -1,4 +1,4 @@
-stylusSprite = require '../lib/gulp-stylus-sprite'
+stylusSprites = require '../lib/gulp-stylus-sprites'
 { File } = require 'gulp-util'
 { PassThrough } = require 'stream'
 { resolve, join, extname } = require 'path'
@@ -14,7 +14,7 @@ describe 'gulp-stylus-sprite', ->
 
   it "create sprite circle", (done) ->
     isGetAllData = false
-    stream = stylusSprite
+    stream = stylusSprites
       imagesSrcBase: "#{__dirname}/fixtures/sprite"
     stream.on 'data', (file) ->
       switch extname file.path
@@ -38,7 +38,7 @@ describe 'gulp-stylus-sprite', ->
 
   it "create sprite square", (done) ->
     isGetAllData = false
-    stream = stylusSprite
+    stream = stylusSprites
       imagesSrcBase: "#{__dirname}/fixtures/sprite"
     stream.on 'data', (file) ->
       switch extname file.path
