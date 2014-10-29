@@ -1,2 +1,2 @@
-gulp-stylus-sprite
+gulp-stylus-sprites
 ===============
