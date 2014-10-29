@@ -23,7 +23,6 @@
   "homepage": "https://github.com/syuji-higa/gulp-stylus-sprite",
   "dependencies": {
     "coffee-script": "^1.8.0",
-    "fs": "0.0.2",
     "gulp-util": "^3.0.1",
     "recursive-readdir": "^1.2.0",
     "spritesmith": "^0.20.0",
