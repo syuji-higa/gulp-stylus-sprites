@@ -7,20 +7,20 @@
     "stylus",
     "sprite"
   ],
-  "main": "lib/gulp-stylus-sprite.js",
+  "main": "lib/gulp-stylus-sprites.js",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script --require coffee-script/register -t 10000 -R spec"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/syuji-higa/gulp-stylus-sprite.git"
+    "url": "https://github.com/syuji-higa/gulp-stylus-sprites.git"
   },
   "author": "syuji-higa",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/syuji-higa/gulp-stylus-sprite/issues"
+    "url": "https://github.com/syuji-higa/gulp-stylus-sprites/issues"
   },
-  "homepage": "https://github.com/syuji-higa/gulp-stylus-sprite",
+  "homepage": "https://github.com/syuji-higa/gulp-stylus-sprites",
   "dependencies": {
     "coffee-script": "^1.8.0",
     "gulp-util": "^3.0.1",
