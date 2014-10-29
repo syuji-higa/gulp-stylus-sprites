@@ -45,11 +45,13 @@ module.exports = (option) ->
           imageFile.contents = new Buffer result.image, 'binary'
           @push imageFile
 
-          for key of result.coordinates
-            obj = result.coordinates
-            obj[key].url = spritePath
-            obj[key].imageWidth = result.properties.width
-            obj[key].imageHeight = result.properties.height
+          obj = {}
+          for key, value of result.coordinates
+            keyName = key.replace option.imagesSrcBase, ''
+            obj[keyName] = value
+            obj[keyName].url = spritePath
+            obj[keyName].width = result.properties.width
+            obj[keyName].height = result.properties.height
           cssHash += JSON.stringify obj
 
           folderInFileCount = 0
