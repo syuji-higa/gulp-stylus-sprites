@@ -15,17 +15,17 @@ describe 'gulp-stylus-sprite', ->
   it "create sprite circle", (done) ->
     isGetAllData = false
     stream = stylusSprites
-      imagesSrcBase: "#{__dirname}/fixtures/sprite"
+      imagesSrcBase    : "#{__dirname}/fixtures/sprite"
     stream.on 'data', (file) ->
       switch extname file.path
         when '.png'
           console.log file
-          #fs.writeFile __dirname + '/fixtures/htdocs/' + file.path, file.contents, 'binary', (err) ->
-          #  if err then console.log err
+          # fs.writeFile __dirname + '/fixtures/htdocs/' + file.path, file.contents, 'binary', (err) ->
+          #   if err then console.log err
         when '.styl'
           console.log file.contents.toString()
-          #fs.writeFile __dirname + '/fixtures/stylus/' + file.path, file.contents, 'binary', (err) ->
-          #  if err then console.log err
+          # fs.writeFile __dirname + '/fixtures/stylus/' + file.path, file.contents, 'binary', (err) ->
+          #   if err then console.log err
     stream.on 'end', ->
       if isGetAllData
         done()
@@ -40,16 +40,17 @@ describe 'gulp-stylus-sprite', ->
     isGetAllData = false
     stream = stylusSprites
       imagesSrcBase: "#{__dirname}/fixtures/sprite"
+      spriteStylusName : 'test'
     stream.on 'data', (file) ->
       switch extname file.path
         when '.png'
           console.log file
-          #fs.writeFile __dirname + '/fixtures/htdocs/' + file.path, file.contents, 'binary', (err) ->
-          #  if err then console.log err
+          # fs.writeFile __dirname + '/fixtures/htdocs/' + file.path, file.contents, 'binary', (err) ->
+          #   if err then console.log err
         when '.styl'
           console.log file.contents.toString()
-          #fs.writeFile __dirname + '/fixtures/stylus/' + file.path, file.contents, 'binary', (err) ->
-          #  if err then console.log err
+          # fs.writeFile __dirname + '/fixtures/stylus/' + file.path, file.contents, 'binary', (err) ->
+          #   if err then console.log err
     stream.on 'end', ->
       if isGetAllData
         done()

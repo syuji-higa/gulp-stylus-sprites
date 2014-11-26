@@ -60,8 +60,10 @@ module.exports = (option) ->
 
   flush = (callback) ->
 
+    unless option.spriteStylusName
+      option.spriteStylusName = 'sprite'
     @push new File
-      path: '_sprite.styl'
+      path: "#{option.spriteStylusName}.styl"
       contents: new Buffer createCss(cssHash)
     @emit 'end'
     callback()
