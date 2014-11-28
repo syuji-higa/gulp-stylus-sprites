@@ -12,10 +12,17 @@ module.exports = (option) ->
 
   transform = (file, encode, callback) ->
 
-    filePath = file.path.replace option.imagesSrcBase, ''
+    unless file.path.match /\\/
+      _file = file.path
+    else
+      _file = file.path.replace /\\/g, '/'
+      option.imagesSrcBase = option.imagesSrcBase.replace /\\/g, '/'
+    filePath = _file.replace option.imagesSrcBase, ''
       .match /^(\/)(.+)(\/.+?\..+?)$/
+    console.log _file
+    console.log option.imagesSrcBase
     file =
-      root: file.path
+      root: _file
       path: filePath[0]
       dir : filePath[2]
       name: filePath[3].replace '/', ''
