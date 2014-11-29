@@ -77,10 +77,13 @@ module.exports = (option) ->
 
   createCss = (cssHash) ->
     cssData =
-      """
-      sprite-hash = #{cssHash}
-      #{mixin()}
-      """
+      if cssHash
+        """
+        sprite-hash = #{cssHash}
+        #{mixin()}
+        """
+      else
+        ''
 
   mixin = ->
     """
