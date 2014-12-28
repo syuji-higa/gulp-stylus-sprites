@@ -56,7 +56,7 @@ module.exports = (option) ->
           for key, value of result.coordinates
             keyName = key.replace option.imagesSrcBase, ''
             obj[keyName] = value
-            obj[keyName].url = spritePath
+            obj[keyName].url = "#{spritePath}.png"
             obj[keyName].width = result.properties.width
             obj[keyName].height = result.properties.height
           cssHash += JSON.stringify obj
