@@ -57,8 +57,8 @@ module.exports = (option) ->
             keyName = key.replace option.imagesSrcBase, ''
             obj[keyName] = value
             obj[keyName].url = "#{spritePath}.png"
-            obj[keyName].width = result.properties.width
-            obj[keyName].height = result.properties.height
+            obj[keyName].width = value.width
+            obj[keyName].height = value.height
           cssHash += JSON.stringify obj
 
           folderInFileCount = 0
