@@ -89,11 +89,11 @@ module.exports = (option) ->
     """
     sprite(filepath, scale = 1)
       image-hash = sprite-hash[filepath]
-      width: -(image-hash.width * scale)px
-      height: -(image-hash.height * scale)px
+      width: (image-hash.width * scale)px
+      height: (image-hash.height * scale)px
       url = image-hash.url
       background: url(url) no-repeat
-      background-position: (image-hash.x * scale)px (image-hash.y * scale)px
+      background-position: (image-hash.x * -scale)px (image-hash.y * -scale)px
       if scale != 1
         background-size: (image-hash.imageWidth * scale)px, (image-hash.imageHeight * scale)px
     sprite-retina(filepath)
