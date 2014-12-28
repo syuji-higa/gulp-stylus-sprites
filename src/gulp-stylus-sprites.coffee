@@ -8,7 +8,7 @@ module.exports = (option) ->
   spritePath = ''
   folderInFileCount = 0
   files = []
-  cssHash = ''
+  cssHash = {}
 
   transform = (file, encode, callback) ->
 
@@ -59,7 +59,9 @@ module.exports = (option) ->
             obj[keyName].url = "#{spritePath}.png"
             obj[keyName].width = value.width
             obj[keyName].height = value.height
-          cssHash += JSON.stringify obj
+
+          for key, val of obj
+            cssHash[key] = val
 
           folderInFileCount = 0
           files = []
@@ -71,7 +73,7 @@ module.exports = (option) ->
       option.spriteStylusName = 'sprite'
     @push new File
       path: "#{option.spriteStylusName}.styl"
-      contents: new Buffer createCss(cssHash)
+      contents: new Buffer createCss(JSON.stringify(cssHash))
     @emit 'end'
     callback()
 
