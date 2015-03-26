@@ -1,9 +1,17 @@
 through = require 'through2'
 { File } = require 'gulp-util'
+{ join } = require 'path'
+{ assign, clone } = require 'lodash'
 recursive = require 'recursive-readdir'
 spritesmith = require 'spritesmith'
 
-module.exports = (option) ->
+defOpts =
+  imgSrcBase: '/sprite'
+  stylusFileName: 'sprite'
+
+module.exports = (opts) ->
+
+  { imgSrcBase, stylusFileName } = assign clone(defOpts), opts
 
   spritePath = ''
   folderInFileCount = 0
@@ -13,28 +21,27 @@ module.exports = (option) ->
   transform = (file, encode, callback) ->
 
     unless file.path.match /\\/
-      _file = file.path
+      filePath = file.path
     else
-      _file = file.path.replace /\\/g, '/'
-      option.imagesSrcBase = option.imagesSrcBase.replace /\\/g, '/'
-    filePath = _file.replace option.imagesSrcBase, ''
-      .match /^(\/)(.+)(\/.+?\..+?)$/
-    console.log _file
-    console.log option.imagesSrcBase
+      filePath = file.path.replace /\\/g, '/'
+
+    baseSplitFilePaths = filePath.split imgSrcBase
+    filePaths = baseSplitFilePaths[1].match /^(\/.+)(\/)(.+?\..+?)$/
+
     file =
-      root: _file
-      path: filePath[0]
-      dir : filePath[2]
-      name: filePath[3].replace '/', ''
+      fullPath   : filePath
+      toRootDir  : baseSplitFilePaths[0]
+      fromRootDir: filePaths[1]
+      name       : filePaths[3]
 
-    files.push file.root
+    files.push file.fullPath
 
-    if spritePath isnt file.dir
-      spritePath = file.dir
+    if spritePath isnt file.fromRootDir
+      spritePath = file.fromRootDir
 
-    recursive "#{option.imagesSrcBase}/#{spritePath}", (err, _files) =>
+    recursive join(file.toRootDir, imgSrcBase, spritePath), (err, _files) =>
 
-      if _files.length - 1 isnt folderInFileCount
+      if _files.length - 1 > folderInFileCount
         folderInFileCount++
         callback()
         return
@@ -53,12 +60,12 @@ module.exports = (option) ->
           @push imageFile
 
           obj = {}
-          for key, value of result.coordinates
-            keyName = key.replace option.imagesSrcBase, ''
-            obj[keyName] = value
+          for key, val of result.coordinates
+            keyName = key.split(imgSrcBase)[1]
+            obj[keyName] = val
             obj[keyName].url = "#{spritePath}.png"
-            obj[keyName].width = value.width
-            obj[keyName].height = value.height
+            obj[keyName].width = val.width
+            obj[keyName].height = val.height
 
           for key, val of obj
             cssHash[key] = val
@@ -69,10 +76,8 @@ module.exports = (option) ->
 
   flush = (callback) ->
 
-    unless option.spriteStylusName
-      option.spriteStylusName = 'sprite'
     @push new File
-      path: "#{option.spriteStylusName}.styl"
+      path: "#{stylusFileName}.styl"
       contents: new Buffer createCss(JSON.stringify(cssHash))
     @emit 'end'
     callback()
