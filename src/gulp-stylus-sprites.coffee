@@ -1,6 +1,6 @@
 through = require 'through2'
 { File } = require 'gulp-util'
-{ join } = require 'path'
+{ join, dirname, basename } = require 'path'
 { assign, clone } = require 'lodash'
 recursive = require 'recursive-readdir'
 spritesmith = require 'spritesmith'
@@ -26,13 +26,12 @@ module.exports = (opts) ->
       filePath = file.path.replace /\\/g, '/'
 
     baseSplitFilePaths = filePath.split imgSrcBase
-    filePaths = baseSplitFilePaths[1].match /^(\/.+)(\/)(.+?\..+?)$/
 
     file =
       fullPath   : filePath
       toRootDir  : baseSplitFilePaths[0]
-      fromRootDir: filePaths[1]
-      name       : filePaths[3]
+      fromRootDir: dirname baseSplitFilePaths[1].replace '/', ''
+      name       : basename baseSplitFilePaths[1]
 
     files.push file.fullPath
 
