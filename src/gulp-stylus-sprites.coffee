@@ -30,7 +30,7 @@ module.exports = (opts) ->
     file =
       fullPath   : filePath
       toRootDir  : baseSplitFilePaths[0]
-      fromRootDir: dirname baseSplitFilePaths[1]
+      fromRootDir: dirname baseSplitFilePaths[1].replace '/', ''
       name       : basename baseSplitFilePaths[1]
 
     files.push file.fullPath
@@ -62,7 +62,7 @@ module.exports = (opts) ->
           for key, val of result.coordinates
             keyName = key.split(imgSrcBase)[1]
             obj[keyName] = val
-            obj[keyName].url = "#{spritePath}.png"
+            obj[keyName].url = "/#{spritePath}.png"
             obj[keyName].width = val.width
             obj[keyName].height = val.height
 
