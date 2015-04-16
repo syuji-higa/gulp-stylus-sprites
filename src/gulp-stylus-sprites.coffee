@@ -30,7 +30,7 @@ module.exports = (opts) ->
     file =
       fullPath   : filePath
       toRootDir  : baseSplitFilePaths[0]
-      fromRootDir: dirname baseSplitFilePaths[1].replace '/', ''
+      fromRootDir: dirname baseSplitFilePaths[1]
       name       : basename baseSplitFilePaths[1]
 
     files.push file.fullPath
