@@ -1,17 +1,18 @@
 through = require 'through2'
 { File } = require 'gulp-util'
 { join, dirname, basename } = require 'path'
-{ assign, clone } = require 'lodash'
+{ defaults, defaultsDeep } = require 'lodash'
 recursive = require 'recursive-readdir'
 spritesmith = require 'spritesmith'
 
 defOpts =
-  imgSrcBase: '/sprite'
-  stylusFileName: 'sprite'
+  imgSrcBase     : '/sprite'
+  stylusFileName : 'sprite'
+  spritesmithOpts: {}
 
-module.exports = (opts) ->
+module.exports = (opts = {}) ->
 
-  { imgSrcBase, stylusFileName } = assign clone(defOpts), opts
+  { imgSrcBase, stylusFileName, spritesmithOpts } = defaults opts, defOpts
 
   spritePath = ''
   folderInFileCount = 0
@@ -45,33 +46,33 @@ module.exports = (opts) ->
         callback()
         return
 
-      spritesmith
-        src: files
-        , (err, result) =>
-          if err then console.log err
-          #console.log result.image
-          #console.log result.coordinates
-          #console.log result.properties
+      spritesmithOpts.src = files
 
-          imageFile = new File
-          imageFile.path = "#{spritePath}.png"
-          imageFile.contents = new Buffer result.image, 'binary'
-          @push imageFile
+      spritesmith spritesmithOpts, (err, result) =>
+        if err then console.log err
+        #console.log result.image
+        #console.log result.coordinates
+        #console.log result.properties
 
-          obj = {}
-          for key, val of result.coordinates
-            keyName = key.split(imgSrcBase)[1]
-            obj[keyName] = val
-            obj[keyName].url = "/#{spritePath}.png"
-            obj[keyName].width = val.width
-            obj[keyName].height = val.height
+        imageFile = new File
+        imageFile.path = "#{spritePath}.png"
+        imageFile.contents = new Buffer result.image, 'binary'
+        @push imageFile
 
-          for key, val of obj
-            cssHash[key] = val
+        obj = {}
+        for key, val of result.coordinates
+          keyName = key.split(imgSrcBase)[1]
+          obj[keyName] = val
+          obj[keyName].url = "/#{spritePath}.png"
+          obj[keyName].width = val.width
+          obj[keyName].height = val.height
 
-          folderInFileCount = 0
-          files = []
-          callback()
+        for key, val of obj
+          cssHash[key] = val
+
+        folderInFileCount = 0
+        files = []
+        callback()
 
   flush = (callback) ->
 
