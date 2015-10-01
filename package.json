@@ -1,6 +1,6 @@
 {
   "name": "gulp-stylus-sprites",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "gulp stylus sprite",
   "keywords": [
     "gulpplugin",

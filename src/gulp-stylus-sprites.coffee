@@ -1,7 +1,7 @@
 through = require 'through2'
 { File } = require 'gulp-util'
 { join, dirname, basename } = require 'path'
-{ defaults, defaultsDeep } = require 'lodash'
+{ defaults, defaultsDeep, assign, some } = require 'lodash'
 recursive = require 'recursive-readdir'
 spritesmith = require 'spritesmith'
 
@@ -10,14 +10,17 @@ defOpts =
   stylusFileName : 'sprite'
   spritesmithOpts: {}
 
+filesDataCache = {}
+
 module.exports = (opts = {}) ->
 
   { imgSrcBase, stylusFileName, spritesmithOpts } = defaults opts, defOpts
 
-  spritePath = ''
+  spritePath        = ''
   folderInFileCount = 0
-  files = []
-  cssHash = {}
+  files             = []
+  cssHash           = {}
+  filesData         = {}
 
   transform = (file, encode, callback) ->
 
@@ -28,6 +31,8 @@ module.exports = (opts = {}) ->
 
     baseSplitFilePaths = filePath.split imgSrcBase
 
+    fileData = file
+
     file =
       fullPath   : filePath
       toRootDir  : baseSplitFilePaths[0]
@@ -37,7 +42,12 @@ module.exports = (opts = {}) ->
     files.push file.fullPath
 
     if spritePath isnt file.fromRootDir
-      spritePath = file.fromRootDir
+      spritePath            = file.fromRootDir
+      filesData[spritePath] = {}
+      unless filesDataCache[spritePath]
+        filesDataCache[spritePath] = {}
+
+    filesData[spritePath][file.fullPath] = fileData
 
     recursive join(file.toRootDir, imgSrcBase, spritePath), (err, _files) =>
 
@@ -45,6 +55,9 @@ module.exports = (opts = {}) ->
         folderInFileCount++
         callback()
         return
+
+      isChanged = some filesData[spritePath], (val, key) ->
+        val.contents.toString() isnt filesDataCache[spritePath][key]?.contents.toString()
 
       spritesmithOpts.src = files
 
@@ -54,10 +67,11 @@ module.exports = (opts = {}) ->
         #console.log result.coordinates
         #console.log result.properties
 
-        imageFile = new File
-        imageFile.path = "#{spritePath}.png"
-        imageFile.contents = new Buffer result.image, 'binary'
-        @push imageFile
+        if isChanged
+          imageFile = new File
+          imageFile.path = "#{spritePath}.png"
+          imageFile.contents = new Buffer result.image, 'binary'
+          @push imageFile
 
         obj = {}
         for key, val of result.coordinates
@@ -69,6 +83,8 @@ module.exports = (opts = {}) ->
 
         for key, val of obj
           cssHash[key] = val
+
+        filesDataCache[spritePath] = assign filesData[spritePath]
 
         folderInFileCount = 0
         files = []
