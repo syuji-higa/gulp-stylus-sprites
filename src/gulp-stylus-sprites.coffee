@@ -1,12 +1,14 @@
 through = require 'through2'
-{ File } = require 'gulp-util'
-{ join, dirname, basename } = require 'path'
-{ defaults, defaultsDeep, assign, some } = require 'lodash'
-recursive = require 'recursive-readdir'
+{ File, PluginError } = require 'gulp-util'
+{ join, dirname, relative } = require 'path'
+{ forEach, map, defaults, some, merge } = require 'lodash'
+{ readdirSync, readFileSync } = require 'fs'
 spritesmith = require 'spritesmith'
 
+PLUGIN_NAME = 'gulp-stylus-sprites'
+
 defOpts =
-  imgSrcBase     : '/sprite'
+  imgSrcBase     : 'sprite'
   stylusFileName : 'sprite'
   spritesmithOpts: {}
 
@@ -16,97 +18,73 @@ module.exports = (opts = {}) ->
 
   { imgSrcBase, stylusFileName, spritesmithOpts } = defaults opts, defOpts
 
-  spritePath        = ''
-  folderInFileCount = 0
-  files             = []
-  cssHash           = {}
-  filesData         = {}
+  dirGroups  = []
+  spriteHash = {}
 
   transform = (file, encode, callback) ->
 
-    unless file.path.match /\\/
-      filePath = file.path
-    else
-      filePath = file.path.replace /\\/g, '/'
+    if file.isNull()
+      @push file
+      callback()
+      return
 
-    baseSplitFilePaths = filePath.split imgSrcBase
+    return unless file.isBuffer()
 
-    fileData = file
+    dirGroup = relative '', dirname file.path
+    if dirGroups.indexOf(dirGroup) isnt -1
+      callback()
+      return
+    dirGroups.push dirGroup
 
-    file =
-      fullPath   : filePath
-      toRootDir  : baseSplitFilePaths[0]
-      fromRootDir: dirname baseSplitFilePaths[1].replace '/', ''
-      name       : basename baseSplitFilePaths[1]
+    srcImageFilenames = map readdirSync(dirGroup), (fileName) ->
+      join dirGroup, fileName
 
-    files.push file.fullPath
+    filesData = {}
+    forEach srcImageFilenames, (fileName) ->
+      fileData = readFileSync(fileName).toString()
+      if filesDataCache[fileName]
+        filesData[fileName] = fileData
+      else
+        filesDataCache[fileName] = fileData
+        filesData[fileName] = null
 
-    if spritePath isnt file.fromRootDir
-      spritePath            = file.fromRootDir
-      filesData[spritePath] = {}
-      unless filesDataCache[spritePath]
-        filesDataCache[spritePath] = {}
+    isChanged = some filesData, (val, key) ->
+      filesDataCache[key] isnt val
 
-    filesData[spritePath][file.fullPath] = fileData
+    return unless isChanged
 
-    recursive join(file.toRootDir, imgSrcBase, spritePath), (err, _files) =>
+    spritesmith { src: srcImageFilenames }, (err, result) =>
+      throw new PluginError PLUGIN_NAME, err if err?
 
-      if _files.length - 1 > folderInFileCount
-        folderInFileCount++
-        callback()
-        return
+      fileRootPath = relative imgSrcBase, "#{dirGroup}.png"
 
-      isChanged = some filesData[spritePath], (val, key) ->
-        val.contents.toString() isnt filesDataCache[spritePath][key]?.contents.toString()
+      imageFile = new File
+      imageFile.path = fileRootPath
+      imageFile.contents = new Buffer result.image, 'binary'
+      @push imageFile
 
-      spritesmithOpts.src = files
+      forEach result.coordinates, (obj, filePath) ->
+        mapKey = relative imgSrcBase, filePath
+        spriteHash[mapKey] = merge obj,
+          url: "/#{fileRootPath}"
 
-      spritesmith spritesmithOpts, (err, result) =>
-        if err then console.log err
-        #console.log result.image
-        #console.log result.coordinates
-        #console.log result.properties
-
-        if isChanged
-          imageFile = new File
-          imageFile.path = "#{spritePath}.png"
-          imageFile.contents = new Buffer result.image, 'binary'
-          @push imageFile
-
-        obj = {}
-        for key, val of result.coordinates
-          keyName = key.split(imgSrcBase)[1]
-          obj[keyName] = val
-          obj[keyName].url = "/#{spritePath}.png"
-          obj[keyName].width = val.width
-          obj[keyName].height = val.height
-
-        for key, val of obj
-          cssHash[key] = val
-
-        filesDataCache[spritePath] = assign filesData[spritePath]
-
-        folderInFileCount = 0
-        files = []
-        callback()
+      callback()
 
   flush = (callback) ->
-
     @push new File
       path: "#{stylusFileName}.styl"
-      contents: new Buffer createCss(JSON.stringify(cssHash))
+      contents: new Buffer createCss(JSON.stringify(spriteHash))
     @emit 'end'
     callback()
 
   createCss = (cssHash) ->
-    cssData =
-      if cssHash
-        """
-        sprite-hash = #{cssHash}
-        #{mixin()}
-        """
-      else
-        ''
+    if cssHash
+      """
+      sprite-hash = #{cssHash}
+      #{mixin()}
+      """
+    else
+      ''
 
   mixin = ->
     """
@@ -123,4 +101,4 @@ module.exports = (opts = {}) ->
       sprite filepath, 0.5
     """
 
-  return through.obj transform, flush
+  return through.obj { objectMode: true }, transform, flush
