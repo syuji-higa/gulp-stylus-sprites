@@ -1,11 +1,17 @@
 through = require 'through2'
 { File, PluginError } = require 'gulp-util'
-{ join, dirname, relative } = require 'path'
-{ forEach, map, defaults, some, merge } = require 'lodash'
+{ join, dirname, relative, extname } = require 'path'
+{ forEach, map, filter, defaults, some, merge } = require 'lodash'
 { readdirSync, readFileSync } = require 'fs'
 spritesmith = require 'spritesmith'
 
 PLUGIN_NAME = 'gulp-stylus-sprites'
+EXTNAMES = [
+  '.png'
+  '.jpg'
+  '.jpeg'
+  '.gif'
+]
 
 defOpts =
   imgSrcBase     : 'sprite'
@@ -38,6 +44,9 @@ module.exports = (opts = {}) ->
 
     srcImageFilenames = map readdirSync(dirGroup), (fileName) ->
       join dirGroup, fileName
+
+    srcImageFilenames = filter srcImageFilenames, (fileName) ->
+      extname(fileName).toLowerCase() in EXTNAMES
 
     filesData = {}
     forEach srcImageFilenames, (fileName) ->
