@@ -20,12 +20,12 @@ describe 'gulp-stylus-sprite', ->
       switch extname file.path
         when '.png'
           console.log file
-          # fs.writeFile __dirname + '/fixtures/htdocs/' + file.path, file.contents, 'binary', (err) ->
-          #   if err then console.log err
+          fs.writeFile __dirname + '/fixtures/htdocs/' + file.path, file.contents, 'binary', (err) ->
+            if err then console.log err
         when '.styl'
           console.log file.contents.toString()
-          # fs.writeFile __dirname + '/fixtures/stylus/' + file.path, file.contents, 'binary', (err) ->
-          #   if err then console.log err
+          fs.writeFile __dirname + '/fixtures/stylus/' + file.path, file.contents, 'binary', (err) ->
+            if err then console.log err
     stream.on 'end', ->
       if isGetAllData
         done()
@@ -45,12 +45,12 @@ describe 'gulp-stylus-sprite', ->
       switch extname file.path
         when '.png'
           console.log file
-          # fs.writeFile __dirname + '/fixtures/htdocs/' + file.path, file.contents, 'binary', (err) ->
-          #   if err then console.log err
+          fs.writeFile __dirname + '/fixtures/htdocs/' + file.path, file.contents, 'binary', (err) ->
+            if err then console.log err
         when '.styl'
           console.log file.contents.toString()
-          # fs.writeFile __dirname + '/fixtures/stylus/' + file.path, file.contents, 'binary', (err) ->
-          #   if err then console.log err
+          fs.writeFile __dirname + '/fixtures/stylus/' + file.path, file.contents, 'binary', (err) ->
+            if err then console.log err
     stream.on 'end', ->
       if isGetAllData
         done()
