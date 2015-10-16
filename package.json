@@ -1,6 +1,6 @@
 {
   "name": "gulp-stylus-sprites",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "description": "gulp stylus sprite",
   "keywords": [
     "gulpplugin",
@@ -34,6 +34,7 @@
     "gulp-mocha": "^1.1.1",
     "gulp-replace": "^0.4.0",
     "mocha": "^1.21.4",
-    "should": "^4.0.4"
+    "should": "^4.0.4",
+    "spritesmith": "^0.20.1"
   }
 }

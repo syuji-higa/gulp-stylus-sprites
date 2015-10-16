@@ -16,6 +16,8 @@ describe 'gulp-stylus-sprite', ->
     isGetAllData = false
     stream = stylusSprites
       imgSrcBase: resolve __dirname, 'fixtures/sprite'
+      spritesmithOpts:
+        engine: 'pngsmith'
     stream.on 'data', (file) ->
       switch extname file.path
         when '.png'
@@ -41,6 +43,8 @@ describe 'gulp-stylus-sprite', ->
     stream = stylusSprites
       imgSrcBase: resolve __dirname, 'fixtures/sprite'
       stylusFileName: 'test'
+      spritesmithOpts:
+        engine: 'pngsmith'
     stream.on 'data', (file) ->
       switch extname file.path
         when '.png'

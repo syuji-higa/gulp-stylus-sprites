@@ -62,7 +62,8 @@ module.exports = (opts = {}) ->
 
     return unless isChanged
 
-    spritesmith { src: srcImageFilenames }, (err, result) =>
+    spritesmith merge({ src: srcImageFilenames }, spritesmithOpts), (err, result) =>
+
       throw new PluginError PLUGIN_NAME, err if err?
 
       fileRootPath = relative imgSrcBase, "#{dirGroup}.png"
