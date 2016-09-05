@@ -1,6 +1,8 @@
 sprite-hash = {"images/circle/blue.png":{"x":0,"y":0,"width":32,"height":32,"url":"/images/circle.png"},"images/circle/green.png":{"x":0,"y":32,"width":32,"height":32,"url":"/images/circle.png"},"images/circle/red.png":{"x":0,"y":64,"width":32,"height":32,"url":"/images/circle.png"}}
 sprite(filepath, scale = 1)
   image-hash = sprite-hash[filepath]
+  if !image-hash
+    error('Not found image file ' + filepath + '.')
   width: (image-hash.width * scale)px
   height: (image-hash.height * scale)px
   url = image-hash.url

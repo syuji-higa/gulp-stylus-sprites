@@ -100,6 +100,8 @@ module.exports = (opts = {}) ->
     """
     sprite(filepath, scale = 1)
       image-hash = sprite-hash[filepath]
+      if !image-hash
+        error('Not found image file ' + filepath + '.')
       width: (image-hash.width * scale)px
       height: (image-hash.height * scale)px
       url = image-hash.url
