@@ -122,8 +122,8 @@ ${ mixin() }`;
   background-position: (-1 * image-hash.x * scale)px (-1 * image-hash.y * scale)px
   if scale != 1
     background-size: (image-hash.width * scale)px, (image-hash.height * scale)px
-  sprite-retina(filepath)
-    sprite filepath, 0.5`;
+sprite-retina(filepath)
+  sprite filepath, 0.5`;
   };
 
   return through.obj({ objectMode: true }, transform, flush);
