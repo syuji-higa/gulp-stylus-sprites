@@ -70,7 +70,7 @@ module.exports = (opts = {}) => {
 
     if(!isChanged) return;
 
-    Spritesmith.run({ src: srcImageFilenames }, (err, result) => {
+    Spritesmith.run(merge({ src: srcImageFilenames }, spritesmithOpts), (err, result) => {
 
       if(err) throw new PluginError(PLUGIN_NAME, err);
 

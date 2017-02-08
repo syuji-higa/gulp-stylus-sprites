@@ -19,7 +19,7 @@ describe('gulp-stylus-sprite', () => {
     const _stream = stylusSprites({
       imgSrcBase: resolve(__dirname, 'fixtures/sprite'),
       spritesmithOpts: {
-        engine: 'pngsmith',
+        algorithm: 'top-down',
       },
     });
     _stream.on('data', (file) => {
@@ -56,9 +56,6 @@ describe('gulp-stylus-sprite', () => {
     const _stream = stylusSprites({
       imgSrcBase: resolve(__dirname, 'fixtures/sprite'),
       stylusFileName: 'test',
-      spritesmithOpts: {
-        engine: 'pngsmith',
-      },
     });
     _stream.on('data', (file) => {
       switch(extname(file.path)) {
