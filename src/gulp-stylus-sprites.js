@@ -64,11 +64,20 @@ module.exports = (opts = {}) => {
       }
     });
 
+    forEach(filesDataCache, (val, key) => {
+      if(!filesData[key]) {
+        delete filesDataCache[key];
+      }
+    });
+
     const isChanged = some(filesData, (val, key) => {
       return filesDataCache[key] !== val;
     });
 
-    if(!isChanged) return;
+    if(!isChanged) {
+      callback();
+      return;
+    }
 
     Spritesmith.run(merge({ src: srcImageFilenames }, spritesmithOpts), (err, result) => {
 
