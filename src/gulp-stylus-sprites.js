@@ -1,7 +1,7 @@
+import 'babel-polyfill';
 import through from 'through2';
 import { File, PluginError } from 'gulp-util';
 import { join, dirname, relative, extname } from 'path';
-import { forEach, map, filter, defaults, some, merge } from 'lodash';
 import { readdirSync, readFileSync } from 'fs';
 import Spritesmith from 'spritesmith';
 
@@ -23,7 +23,7 @@ const filesDataCache = {};
 
 module.exports = (opts = {}) => {
 
-  const { imgSrcBase, stylusFileName, spritesmithOpts } = defaults(opts, defOpts);
+  const { imgSrcBase, stylusFileName, spritesmithOpts } = Object.assign({}, defOpts, opts);
 
   const dirGroups  = [];
   const spriteHash = {};
@@ -45,16 +45,16 @@ module.exports = (opts = {}) => {
     }
     dirGroups.push(dirGroup);
 
-    let srcImageFilenames = map(readdirSync(dirGroup), (fileName) => {
+    let srcImageFilenames = readdirSync(dirGroup).map((fileName) => {
       return join(dirGroup, fileName);
     });
 
-    srcImageFilenames = filter(srcImageFilenames, (fileName) => {
+    srcImageFilenames = srcImageFilenames.filter((fileName) => {
       return EXTNAMES.some((name) => extname(fileName).toLowerCase() === name);
     });
 
     const filesData = {};
-    forEach(srcImageFilenames, (fileName) => {
+    srcImageFilenames.forEach((fileName) => {
       const fileData = readFileSync(fileName).toString();
       if(filesDataCache[fileName]) {
         filesData[fileName] = fileData;
@@ -64,13 +64,13 @@ module.exports = (opts = {}) => {
       }
     });
 
-    forEach(filesDataCache, (val, key) => {
+    for(const [key, val] of Object.entries(filesDataCache)) {
       if(!filesData[key]) {
         delete filesDataCache[key];
       }
-    });
+    }
 
-    const isChanged = some(filesData, (val, key) => {
+    const isChanged = Object.entries(filesData).some(([val, key]) => {
       return filesDataCache[key] !== val;
     });
 
@@ -79,7 +79,7 @@ module.exports = (opts = {}) => {
       return;
     }
 
-    Spritesmith.run(merge({ src: srcImageFilenames }, spritesmithOpts), (err, result) => {
+    Spritesmith.run(Object.assign({ src: srcImageFilenames }, spritesmithOpts), (err, result) => {
 
       if(err) throw new PluginError(PLUGIN_NAME, err);
 
@@ -90,12 +90,10 @@ module.exports = (opts = {}) => {
       imageFile.contents = new Buffer(result.image, 'binary');
       this.push(imageFile);
 
-      forEach(result.coordinates, (obj, filePath) => {
+      for(const [filePath, obj] of Object.entries(result.coordinates)) {
         const mapKey = relative(imgSrcBase, filePath);
-        spriteHash[mapKey] = merge(obj, {
-          url: `/${ fileRootPath }`,
-        });
-      });
+        spriteHash[mapKey] = Object.assign({ url: `/${ fileRootPath }` }, obj);
+      }
 
       callback()
     });
