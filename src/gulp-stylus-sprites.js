@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import through from 'through2';
 import { File, PluginError } from 'gulp-util';
 import { join, dirname, relative, extname } from 'path';

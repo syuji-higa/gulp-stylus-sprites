@@ -1,6 +1,6 @@
 {
   "name": "gulp-stylus-sprites",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "gulp stylus sprite",
   "keywords": [
     "gulpplugin",
@@ -27,13 +27,13 @@
     ]
   },
   "dependencies": {
-    "babel-polyfill": "^6.22.0",
     "gulp-util": "^3.0.8",
     "spritesmith": "^3.1.0",
     "through2": "^2.0.3"
   },
   "devDependencies": {
     "babel": "^6.5.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.22.0",
     "babel-register": "^6.22.0",
     "gulp": "^3.9.1",

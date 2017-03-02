@@ -14,7 +14,9 @@ gulp.task('watch', () => {
 
 gulp.task('babel', () => {
   return gulp.src(files.src)
-    .pipe(babel())
+    .pipe(babel({
+      plugins: ['transform-runtime'],
+    }))
     .pipe(replace(/\n{2,}/g, '\n'))
     .pipe(gulp.dest('lib'))
     .on('end', () => {
